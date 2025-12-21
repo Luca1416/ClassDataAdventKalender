@@ -31,11 +31,13 @@ class PixelMorphApp(tk.Toplevel):
         # Only create a hidden root when none exists so we can run standalone.
         self._owned_root = None
         if master is None:
-            master = tk._get_default_root()
-        if master is None:
-            self._owned_root = tk.Tk()
-            self._owned_root.withdraw()
-            master = self._owned_root
+            existing_root = tk._default_root  # avoid auto-creating a root (so run() knows to mainloop)
+            if existing_root is None:
+                self._owned_root = tk.Tk()
+                self._owned_root.withdraw()
+                master = self._owned_root
+            else:
+                master = existing_root
 
         super().__init__(master)
 
